@@ -35,6 +35,14 @@ function getRegion(lat, lon) {
     return 'western'; 
 }
 
+// display images for a region/time
+function displayImages(region, timePeriod) {
+    const regionImages = images[region][timePeriod];
+    document.getElementById('img1').src = regionImages[0];
+    document.getElementById('img2').src = regionImages[1];
+    document.getElementById('region-info').textContent = `${timePeriod} • ${region}`;
+}
+
 // load content
 async function loadContent() {
     try {
@@ -47,22 +55,55 @@ async function loadContent() {
         const region = getRegion(data.latitude, data.longitude);
         const timePeriod = getTimePeriod();
         
-        // update header
-        document.getElementById('header').textContent = `${timePeriod} time ${region}`;
-        
-        // load images based on time
-        const regionImages = images[region][timePeriod];
-        document.getElementById('img1').src = regionImages[0];
-        document.getElementById('img2').src = regionImages[1];
+        displayImages(region, timePeriod);
         
     } catch (error) {
         // fallback to western day if api fails
         console.log('using fallback');
         const timePeriod = getTimePeriod();
-        document.getElementById('header').textContent = `${timePeriod} time western`;
-        document.getElementById('img1').src = images.western[timePeriod][0];
-        document.getElementById('img2').src = images.western[timePeriod][1];
+        displayImages('western', timePeriod);
     }
 }
+
+// browse modal functionality
+const modal = document.getElementById('browse-modal');
+const browseBtn = document.getElementById('browse-btn');
+const closeBtn = document.querySelector('.close-btn');
+
+browseBtn.addEventListener('click', () => {
+    modal.classList.add('active');
+    loadBrowsePreviews();
+});
+
+closeBtn.addEventListener('click', () => {
+    modal.classList.remove('active');
+});
+
+modal.addEventListener('click', (e) => {
+    if (e.target === modal) {
+        modal.classList.remove('active');
+    }
+});
+
+// load preview images for browse cards
+function loadBrowsePreviews() {
+    const cards = document.querySelectorAll('.region-card');
+    cards.forEach(card => {
+        const region = card.dataset.region;
+        const time = card.dataset.time;
+        const previewImage = images[region][time][0];
+        card.style.backgroundImage = `url('${previewImage}')`;
+    });
+}
+
+// handle region card clicks
+document.querySelectorAll('.region-card').forEach(card => {
+    card.addEventListener('click', () => {
+        const region = card.dataset.region;
+        const time = card.dataset.time;
+        displayImages(region, time);
+        modal.classList.remove('active');
+    });
+});
 
 loadContent();
