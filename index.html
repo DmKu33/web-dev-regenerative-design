@@ -3,15 +3,60 @@
 <head>
     <meta charset="utf-8">
     <meta name="viewport" content="width=device-width, initial-scale=1">
-    <title>Regional Time View</title>
+    <title>Pixel Chronicles</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Press+Start+2P&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="assets/css/styles.css">
 </head>
 <body>
-    <div id="header"></div>
+    <div id="header">
+        <div id="title-section">
+            <h1 id="main-title">PIXEL CHRONICLES</h1>
+            <p id="subtitle">your world • pixelated by time & place</p>
+            <p id="region-info"></p>
+        </div>
+        <button id="browse-btn">▼ BROWSE</button>
+    </div>
+    
     <div id="container">
         <img id="img1" alt="regional image 1">
         <img id="img2" alt="regional image 2">
     </div>
+
+    <div id="browse-modal" class="modal">
+        <div class="modal-content">
+            <button class="close-btn">✕</button>
+            <h2>EXPLORE REGIONS</h2>
+            <div class="browse-grid">
+                <div class="region-card" data-region="northern" data-time="day">
+                    <div class="card-label">Northern • Day</div>
+                </div>
+                <div class="region-card" data-region="northern" data-time="night">
+                    <div class="card-label">Northern • Night</div>
+                </div>
+                <div class="region-card" data-region="southern" data-time="day">
+                    <div class="card-label">Southern • Day</div>
+                </div>
+                <div class="region-card" data-region="southern" data-time="night">
+                    <div class="card-label">Southern • Night</div>
+                </div>
+                <div class="region-card" data-region="eastern" data-time="day">
+                    <div class="card-label">Eastern • Day</div>
+                </div>
+                <div class="region-card" data-region="eastern" data-time="night">
+                    <div class="card-label">Eastern • Night</div>
+                </div>
+                <div class="region-card" data-region="western" data-time="day">
+                    <div class="card-label">Western • Day</div>
+                </div>
+                <div class="region-card" data-region="western" data-time="night">
+                    <div class="card-label">Western • Night</div>
+                </div>
+            </div>
+        </div>
+    </div>
+
     <script src="assets/js/config.js"></script>
     <script src="assets/js/main.js"></script>
 </body>
