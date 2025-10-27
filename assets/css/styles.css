@@ -27,7 +27,8 @@ body {
     font-size: 28px;
     letter-spacing: 2px;
     color: #ffffff;
-    text-shadow: 2px 2px 0px #888888, 4px 4px 0px rgba(255, 255, 255, 0.3);
+    text-shadow: 
+        0 0 10px #fff;
     margin-bottom: 15px;
     image-rendering: pixelated;
 }
