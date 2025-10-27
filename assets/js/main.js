@@ -30,8 +30,9 @@ function getRegion(lat, lon) {
     if (lat > 42) return 'northern';
     if (lat < 35) return 'southern';
     // middle latitudes - check longitude
+    // mississippi river is roughly -90, use -95 as divider
     if (lon < -100) return 'western';
-    if (lon > -80) return 'eastern';
+    if (lon > -95) return 'eastern';
     return 'western'; 
 }
 
@@ -48,9 +49,20 @@ async function loadContent() {
     try {
         // get location from api
         const apiKey = typeof IPAPI !== 'undefined' ? IPAPI : '';
-        const url = apiKey ? `https://ipapi.co/json/?key=${apiKey}` : 'https://ipapi.co/json/';
+        const url = apiKey 
+            ? `https://api.ipapi.com/api/check?access_key=${apiKey}` 
+            : 'https://ipapi.co/json/';
+        console.log('Fetching from:', url);
+        
         const response = await fetch(url);
         const data = await response.json();
+        
+        console.log('API Response:', data);
+        
+        // check if API returned an error
+        if (data.error) {
+            throw new Error(`API Error: ${data.error.info || data.reason || 'Unknown error'}`);
+        }
         
         const region = getRegion(data.latitude, data.longitude);
         const timePeriod = getTimePeriod();
@@ -59,6 +71,7 @@ async function loadContent() {
         
     } catch (error) {
         // fallback to western day if api fails
+        console.log('Error occurred:', error.message || error);
         console.log('using fallback');
         const timePeriod = getTimePeriod();
         displayImages('western', timePeriod);
