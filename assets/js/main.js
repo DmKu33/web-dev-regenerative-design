@@ -1,20 +1,44 @@
-// image data for each region
+// image data for each region with labels
 const images = {
     northern: {
-        day: ['northern/day mt rainer.png', 'northern/day yellowstone .png'],
-        night: ['northern/night mt rainer.jpg', 'northern/night yellostone.png']
+        day: [
+            { src: 'northern/day mt rainer.png', label: 'Mt. Rainier' },
+            { src: 'northern/day yellowstone .png', label: 'Yellowstone' }
+        ],
+        night: [
+            { src: 'northern/night mt rainer.jpg', label: 'Mt. Rainier' },
+            { src: 'northern/night yellostone.png', label: 'Yellowstone' }
+        ]
     },
     southern: {
-        day: ['southern/day miami.jpg', 'southern/day western .png'],
-        night: ['southern/night miami .png', 'southern/night western.jpeg']
+        day: [
+            { src: 'southern/day miami.jpg', label: 'Miami' },
+            { src: 'southern/day western .png', label: 'Texas' }
+        ],
+        night: [
+            { src: 'southern/night miami .png', label: 'Miami' },
+            { src: 'southern/night western.jpeg', label: 'Texas' }
+        ]
     },
     eastern: {
-        day: ['eastern/day new york.jpg', 'eastern/day white house .jpg'],
-        night: ['eastern/night nyc.png', 'eastern/night white house.png']
+        day: [
+            { src: 'eastern/day new york.jpg', label: 'New York' },
+            { src: 'eastern/day white house .jpg', label: 'White House' }
+        ],
+        night: [
+            { src: 'eastern/night nyc.png', label: 'NYC' },
+            { src: 'eastern/night white house.png', label: 'White House' }
+        ]
     },
     western: {
-        day: ['western/day golden gate.jpg', 'western/day santa monica.jpg'],
-        night: ['western/night golden gate.png', 'western/night santa monica.png']
+        day: [
+            { src: 'western/day golden gate.jpg', label: 'Golden Gate' },
+            { src: 'western/day santa monica.jpg', label: 'Santa Monica' }
+        ],
+        night: [
+            { src: 'western/night golden gate.png', label: 'Golden Gate' },
+            { src: 'western/night santa monica.png', label: 'Santa Monica' }
+        ]
     }
 };
 
@@ -37,11 +61,29 @@ function getRegion(lat, lon) {
 }
 
 // display images for a region/time
-function displayImages(region, timePeriod) {
+function displayImages(region, timePeriod, locationInfo = null) {
     const regionImages = images[region][timePeriod];
-    document.getElementById('img1').src = regionImages[0];
-    document.getElementById('img2').src = regionImages[1];
+    
+    // set images
+    document.getElementById('img1').src = regionImages[0].src;
+    document.getElementById('img2').src = regionImages[1].src;
+    
+    // set image labels
+    document.getElementById('label1').textContent = regionImages[0].label;
+    document.getElementById('label2').textContent = regionImages[1].label;
+    
+    // update region info
     document.getElementById('region-info').textContent = `${timePeriod} • ${region}`;
+    
+    // more info on subtitle
+    const subtitle = document.getElementById('subtitle');
+    if (locationInfo) {
+        const { city, region_name, country_name } = locationInfo;
+        const location = city || region_name || country_name || 'your location';
+        subtitle.textContent = `showing ${region} region • ${timePeriod} time • based on ${location} & current hour`;
+    } else {
+        subtitle.textContent = `showing ${region} region • ${timePeriod} time`;
+    }
 }
 
 // load content
@@ -67,7 +109,12 @@ async function loadContent() {
         const region = getRegion(data.latitude, data.longitude);
         const timePeriod = getTimePeriod();
         
-        displayImages(region, timePeriod);
+        // pass location info for detailed subtitle
+        displayImages(region, timePeriod, {
+            city: data.city,
+            region_name: data.region || data.region_name,
+            country_name: data.country || data.country_name
+        });
         
     } catch (error) {
         // fallback to western day if api fails
@@ -104,7 +151,7 @@ function loadBrowsePreviews() {
     cards.forEach(card => {
         const region = card.dataset.region;
         const time = card.dataset.time;
-        const previewImage = images[region][time][0];
+        const previewImage = images[region][time][0].src;
         card.style.backgroundImage = `url('${previewImage}')`;
     });
 }
